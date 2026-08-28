@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File Processing API — demo console</title>
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+
+<header class="page-head">
+  <div>
+    <h1>File Processing API</h1>
+    <p class="sub">Demo console — drives the live API from its own origin.</p>
+  </div>
+  <div class="health" id="health">
+    <span class="badge" id="badge-live">live …</span>
+    <span class="badge" id="badge-ready">ready …</span>
+  </div>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>1 · API key</h2>
+    <p class="hint">
+      Sent as the <code>X-Api-Key</code> header on every request. Each development key carries
+      different scopes, so switching keys is how you see <code>403</code> and tenant isolation.
+    </p>
+    <div class="row">
+      <label for="key-select">Key</label>
+      <select id="key-select">
+        <option value="dev-uploader-key-4f2b8c1e9a7d3506">dummy-freight — write, read, reports</option>
+        <option value="dev-readonly-key-91c7ae2d5b0846f3">beta-logistics — read, reports (no upload)</option>
+        <option value="dev-ops-key-7b3e5f9c2a418d60">operations — cross-client read, reports</option>
+        <option value="">(none — expect 401)</option>
+        <option value="custom">custom…</option>
+      </select>
+    </div>
+    <div class="row hidden" id="custom-key-row">
+      <label for="key-custom">Value</label>
+      <input type="text" id="key-custom" placeholder="paste an API key" autocomplete="off" spellcheck="false">
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2 · Upload a CSV</h2>
+    <p class="hint"><code>POST /api/v1/files</code> — needs the <code>files:write</code> scope.</p>
+    <div class="row">
+      <label for="file-input">File</label>
+      <input type="file" id="file-input" accept=".csv,text/csv">
+    </div>
+    <div class="row">
+      <span class="label">Or use a sample</span>
+      <div class="btn-group">
+        <button type="button" class="ghost" data-sample="valid">clean (10 rows)</button>
+        <button type="button" class="ghost" data-sample="errors">mixed errors</button>
+        <button type="button" class="ghost" data-sample="badHeader">bad header</button>
+      </div>
+    </div>
+    <div class="row">
+      <span class="label"></span>
+      <button type="button" id="btn-upload" class="primary">Upload &amp; process</button>
+    </div>
+    <div id="upload-result" class="result"></div>
+  </section>
+
+  <section class="card">
+    <h2>3 · Tracked files</h2>
+    <p class="hint"><code>GET /api/v1/files</code> — every upload is recorded, including rejections.</p>
+    <div class="row">
+      <label for="filter-status">Status</label>
+      <select id="filter-status">
+        <option value="">any</option>
+        <option value="Succeeded">Succeeded</option>
+        <option value="CompletedWithErrors">CompletedWithErrors</option>
+        <option value="Failed">Failed</option>
+      </select>
+      <label for="filter-size" class="inline">Page size</label>
+      <input type="number" id="filter-size" value="10" min="1" max="200">
+      <button type="button" id="btn-list" class="primary">List</button>
+    </div>
+    <div id="list-result" class="result"></div>
+  </section>
+
+  <section class="card">
+    <h2>4 · Summary report</h2>
+    <p class="hint"><code>GET /api/v1/reports/summary</code> — needs the <code>reports:read</code> scope.</p>
+    <div class="row">
+      <label for="report-from">From</label>
+      <input type="date" id="report-from">
+      <label for="report-to" class="inline">To</label>
+      <input type="date" id="report-to">
+      <button type="button" id="btn-report" class="primary">Get summary</button>
+    </div>
+    <div id="report-result" class="result"></div>
+  </section>
+
+</main>
+
+<dialog id="raw-dialog">
+  <div class="dialog-head">
+    <h3 id="raw-title">Response</h3>
+    <button type="button" id="raw-close" class="ghost">Close</button>
+  </div>
+  <pre id="raw-body"></pre>
+</dialog>
+
+<script src="demo.js"></script>
+</body>
+</html>
