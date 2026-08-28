@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <UserSecretsId>fileprocessing-api-6f1c0f2a</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+    <!-- Design-time only: gives `dotnet ef` a startup project it can build the model from.
+         The package's default asset set includes `runtime`, which drags roughly 4 MB of Roslyn
+         MSBuild BuildHost content into the published output. `dotnet ef` only needs the build
+         targets, so runtime assets are excluded and the deployed image carries no build tooling. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>build; buildtransitive; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FileProcessing.Core\FileProcessing.Core.csproj" />
+    <ProjectReference Include="..\FileProcessing.Infrastructure\FileProcessing.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FileProcessing.IntegrationTests" />
+  </ItemGroup>
+
+</Project>
