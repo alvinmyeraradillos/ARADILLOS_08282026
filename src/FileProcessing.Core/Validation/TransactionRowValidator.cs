@@ -8,15 +8,12 @@ namespace FileProcessing.Core.Validation;
 /// Field-level rules for a transactions row. Kept separate from the CSV plumbing so the rules can
 /// be unit tested on their own and reused if another input format is added later.
 /// </summary>
-public sealed class TransactionRowValidator(FileProcessingOptions options, IClock clock)
+public sealed class TransactionRowValidator(IClock clock)
 {
     private const int MaxIdLength = 64;
     private const int MaxDescriptionLength = 256;
     private const int MaxCategoryLength = 64;
     private const decimal MaxAbsoluteAmount = 1_000_000_000m;
-
-    private readonly HashSet<string> _allowedCurrencies =
-        new(options.AllowedCurrencies, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Validates one row. Returns <see langword="true"/> and the parsed record when every rule
@@ -151,15 +148,6 @@ public sealed class TransactionRowValidator(FileProcessingOptions options, ICloc
                 lineNumber,
                 "currency.invalid_format",
                 "Currency must be a three letter ISO 4217 code.",
-                "Currency");
-            valid = false;
-        }
-        else if (!_allowedCurrencies.Contains(currency))
-        {
-            errors.Add(
-                lineNumber,
-                "currency.not_allowed",
-                $"Currency is not one of the accepted codes: {string.Join(", ", options.AllowedCurrencies)}.",
                 "Currency");
             valid = false;
         }

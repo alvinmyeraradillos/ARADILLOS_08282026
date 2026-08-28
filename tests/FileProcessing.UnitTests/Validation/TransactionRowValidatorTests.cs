@@ -107,9 +107,23 @@ public sealed class TransactionRowValidatorTests
     [InlineData("AUDD", "currency.invalid_format")]
     [InlineData("A1D", "currency.invalid_format")]
     [InlineData("", "currency.missing")]
-    [InlineData("XYZ", "currency.not_allowed")]
     public void Enforces_the_currency_rules(string currency, string expectedCode) =>
         AssertRejected(Valid with { Currency = currency }, expectedCode);
+
+    [Theory]
+    [InlineData("JPY")]
+    [InlineData("ZAR")]
+    [InlineData("XYZ")]
+    public void Accepts_any_well_formed_currency_code(string currency)
+    {
+        // The rule is the shape of the code, not membership of a list. Which currencies a business
+        // accepts is not this service's decision, and an allow-list here would reject a legitimate
+        // file the first time someone started trading in a new one.
+        var (accepted, errors, record) = Validate(Valid with { Currency = currency });
+
+        Assert.True(accepted, string.Join(", ", errors.Errors.Select(e => e.Code)));
+        Assert.Equal(currency, record!.Currency);
+    }
 
     [Fact]
     public void Requires_a_category() =>
@@ -149,7 +163,7 @@ public sealed class TransactionRowValidatorTests
         long lineNumber = 2,
         FixedClock? clock = null)
     {
-        var validator = new TransactionRowValidator(new FileProcessingOptions(), clock ?? new FixedClock());
+        var validator = new TransactionRowValidator(clock ?? new FixedClock());
         var errors = new ErrorSink(100);
         var accepted = validator.TryValidate(lineNumber, in row, errors, out var record);
 

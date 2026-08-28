@@ -60,12 +60,12 @@ public sealed class TransactionCsvProcessorTests
     {
         var result = await ProcessAsync($"""
             {Header}
-            ,not-a-date,Bad,not-a-number,XYZ,
+            ,not-a-date,Bad,not-a-number,AUDD,
             """);
 
         Assert.Equal(1, result.InvalidRows);
         Assert.Equal(
-            ["transactionId.missing", "transactionDate.invalid_format", "amount.not_a_number", "currency.not_allowed", "category.missing"],
+            ["transactionId.missing", "transactionDate.invalid_format", "amount.not_a_number", "currency.invalid_format", "category.missing"],
             result.Errors.Select(e => e.Code));
     }
 

@@ -26,9 +26,6 @@ public sealed class FileProcessingOptions
     public string[] AllowedContentTypes { get; set; } =
         ["text/csv", "application/csv", "text/plain", "application/vnd.ms-excel", "application/octet-stream"];
 
-    /// <summary>ISO 4217 codes accepted in the currency column.</summary>
-    public string[] AllowedCurrencies { get; set; } = ["AUD", "NZD", "USD", "EUR", "GBP", "SGD"];
-
     /// <summary>
     /// Rejects a file whose SHA-256 has already been processed successfully by the same client.
     /// </summary>

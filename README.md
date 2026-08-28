@@ -134,7 +134,7 @@ dotnet ef database update --project src/FileProcessing.Infrastructure --startup-
 dotnet test
 ```
 
-119 tests — 85 unit, 34 integration. No database and no Docker required; run it straight after
+121 tests — 87 unit, 34 integration. No database and no Docker required; run it straight after
 cloning. The integration tests host the real application through `WebApplicationFactory` with the
 database swapped for an in-memory provider.
 
@@ -443,7 +443,7 @@ required.
 | `TransactionDate` | Required, ISO 8601 `yyyy-MM-dd`, not in the future |
 | `Description` | Optional, ≤ 256 chars, no control characters |
 | `Amount` | Required decimal, ≤ 2 decimal places, thousands separators and negatives accepted |
-| `Currency` | Required, 3-letter ISO 4217, on the configured allow list |
+| `Currency` | Required, three-letter ISO 4217 code |
 | `Category` | Required, ≤ 64 chars |
 
 Quoted fields, escaped quotes, embedded commas, embedded newlines and a UTF-8 BOM are all handled.
@@ -470,7 +470,7 @@ Every rejected row carries a stable code, so a client can branch on it without p
 | `description.too_long` / `description.invalid_characters` | Over 256 characters, or contains control characters |
 | `amount.missing` / `amount.not_a_number` | Absent, or not parseable as a decimal |
 | `amount.too_many_decimals` / `amount.out_of_range` | More than 2 dp, or outside the accepted range |
-| `currency.missing` / `currency.invalid_format` / `currency.not_allowed` | Absent, not a 3-letter code, or not on the allow list |
+| `currency.missing` / `currency.invalid_format` | Absent, or not a three-letter code |
 | `category.missing` / `category.too_long` | Absent, or over 64 characters |
 | `row.column_count_mismatch` | Row has a different number of columns than the header |
 | `file.malformed_csv` | The bytes are not well-formed CSV (file-level, not row-level) |
@@ -533,7 +533,6 @@ Every setting can be supplied by environment variable using `__` as the separato
 | `FileProcessing:MaxRetainedErrors` | `100` | Row errors stored and returned per file |
 | `FileProcessing:AllowedExtensions` | `[".csv"]` | Accepted file extensions |
 | `FileProcessing:AllowedContentTypes` | see `appsettings.json` | Accepted content types |
-| `FileProcessing:AllowedCurrencies` | `AUD NZD USD EUR GBP SGD` | Accepted ISO 4217 codes |
 | `FileProcessing:RejectDuplicateUploads` | `false` | Reject re-uploading identical content |
 | `RateLimiting:UploadPermitLimit` | `20` | Uploads per client per window |
 | `RateLimiting:UploadWindowSeconds` | `60` | Upload window length |

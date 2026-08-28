@@ -112,6 +112,17 @@ if (app.Environment.IsProduction())
 
 app.UseApiDocumentation(app.Environment);
 
+// The demo console in wwwroot. Served from the API's own origin on purpose: the page sends the
+// API key as a request header, and a page hosted anywhere else would be blocked by CORS before it
+// ever reached an endpoint. Static files sit ahead of routing, so they are not endpoints and the
+// fallback authorization policy does not apply — which is what we want for an unauthenticated
+// page whose whole job is to collect a key. Withheld in production, like Swagger.
+if (!app.Environment.IsProduction())
+{
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+}
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseRateLimiter();
