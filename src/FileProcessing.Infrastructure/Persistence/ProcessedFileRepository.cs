@@ -101,16 +101,25 @@ public sealed class ProcessedFileRepository(FileProcessingDbContext context) : I
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var byClient = await filtered
+        // Projected into an anonymous type rather than straight into ClientActivity: EF cannot
+        // translate a grouped aggregate into a constructor call, so the record is built once the
+        // rows are back. The aggregation itself still happens in the database.
+        var byClientRows = await filtered
             .GroupBy(f => f.ClientId)
-            .Select(g => new ClientActivity(
-                g.Key,
-                g.Count(),
-                g.Sum(f => f.TotalRows),
-                g.Sum(f => f.TotalAmount)))
-            .OrderByDescending(c => c.FileCount)
+            .Select(g => new
+            {
+                ClientId = g.Key,
+                FileCount = g.Count(),
+                TotalRows = g.Sum(f => f.TotalRows),
+                TotalAmount = g.Sum(f => f.TotalAmount),
+            })
+            .OrderByDescending(row => row.FileCount)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        var byClient = byClientRows
+            .Select(row => new ClientActivity(row.ClientId, row.FileCount, row.TotalRows, row.TotalAmount))
+            .ToArray();
 
         return new ProcessingSummaryReport
         {

@@ -29,6 +29,13 @@ public sealed class FileProcessingOptions
     /// <summary>ISO 4217 codes accepted in the currency column.</summary>
     public string[] AllowedCurrencies { get; set; } = ["AUD", "NZD", "USD", "EUR", "GBP", "SGD"];
 
-    /// <summary>Rejects a file whose SHA-256 has already been processed by the same client.</summary>
-    public bool RejectDuplicateUploads { get; set; } = true;
+    /// <summary>
+    /// Rejects a file whose SHA-256 has already been processed successfully by the same client.
+    /// </summary>
+    /// <remarks>
+    /// Off by default, matching appsettings.json. Re-sending identical bytes is often deliberate —
+    /// a retry after a timeout, or a nightly export that genuinely has not changed — so refusing it
+    /// is a policy decision for the deployment rather than something the service should assume.
+    /// </remarks>
+    public bool RejectDuplicateUploads { get; set; }
 }

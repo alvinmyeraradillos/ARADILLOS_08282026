@@ -99,8 +99,9 @@ public static class RateLimitingExtensions
                 }
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                context.HttpContext.Response.ContentType = "application/problem+json";
 
+                // The content type has to be passed to WriteAsJsonAsync; setting Response.ContentType
+                // beforehand is overwritten by the serializer's own default of application/json.
                 await context.HttpContext.Response.WriteAsJsonAsync(
                     new ProblemDetails
                     {
@@ -108,6 +109,8 @@ public static class RateLimitingExtensions
                         Title = "Too many requests",
                         Detail = "The request rate for this API key has been exceeded. Retry after a short delay.",
                     },
+                    options: null,
+                    contentType: "application/problem+json",
                     cancellationToken);
             };
         });
