@@ -13,9 +13,11 @@ public interface IProcessedFileRepository
 
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
 
-    /// <param name="restrictToClientId">
-    /// When supplied, the record is only returned if it belongs to that client.
-    /// </param>
+    /// <summary>
+    /// Loads one record with its errors. When <c>restrictToClientId</c> is supplied the record is
+    /// only returned if it belongs to that client, so an unauthorised id looks the same as a
+    /// missing one.
+    /// </summary>
     Task<ProcessedFile?> GetAsync(
         Guid id,
         string? restrictToClientId,
