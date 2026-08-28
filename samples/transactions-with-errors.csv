@@ -1,0 +1,11 @@
+TransactionId,TransactionDate,Description,Amount,Currency,Category
+TXN-2001,2026-07-01,Valid row,500.00,AUD,Linehaul
+TXN-2002,01/07/2026,Date is not ISO 8601,120.00,AUD,Fuel
+TXN-2003,2026-07-02,Amount is not a number,twelve,AUD,Fuel
+TXN-2004,2026-07-03,Currency is not on the allow list,75.00,XYZ,Equipment
+TXN-2005,2026-07-04,Category is missing,60.00,AUD,
+TXN-2001,2026-07-05,Transaction id repeats an earlier row,90.00,AUD,Linehaul
+TXN-2006,2026-07-06,Too many decimal places,10.005,AUD,Fuel
+TXN-2007,2026-07-07,This row is missing its trailing columns
+TXN-2008,2099-01-01,Dated in the future,45.00,AUD,Adjustments
+TXN-2009,2026-07-09,Another valid row,275.50,AUD,Warehousing

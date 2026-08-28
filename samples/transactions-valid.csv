@@ -1,0 +1,12 @@
+TransactionId,TransactionDate,Description,Amount,Currency,Category
+TXN-1001,2026-07-01,Melbourne to Geelong linehaul,1450.00,AUD,Linehaul
+TXN-1002,2026-07-01,"Fuel levy, July",212.55,AUD,Fuel
+TXN-1003,2026-07-02,Pallet hire,88.40,AUD,Equipment
+TXN-1004,2026-07-03,"Detention charge, Altona North",165.00,AUD,Detention
+TXN-1005,2026-07-05,Sydney metro delivery,980.25,AUD,Linehaul
+TXN-1006,2026-07-08,Fuel levy adjustment,-45.10,AUD,Fuel
+TXN-1007,2026-07-11,"Overnight storage
+(two nights)",320.00,AUD,Warehousing
+TXN-1008,2026-07-15,Auckland cross-dock,610.00,NZD,Linehaul
+TXN-1009,2026-07-19,Container lift fee,140.75,AUD,Equipment
+TXN-1010,2026-07-22,"Customer credit ""goodwill""",-200.00,AUD,Adjustments

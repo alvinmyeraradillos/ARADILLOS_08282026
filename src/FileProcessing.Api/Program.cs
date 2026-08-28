@@ -135,15 +135,12 @@ await ApplyDevelopmentMigrationsAsync(app);
 
 await app.RunAsync();
 
-/// <summary>
-/// Brings the schema up to date in development only.
-/// </summary>
-/// <remarks>
-/// Production deployments run migrations as a separate, reviewable step — a web process racing
-/// its own replicas to alter a schema is a good way to lose a database. A failure here is logged
-/// loudly but does not stop the host, so the API and its readiness probe still come up and say
-/// what is wrong.
-/// </remarks>
+// Brings the schema up to date in development only.
+//
+// Production deployments run migrations as a separate, reviewable step — a web process racing its
+// own replicas to alter a schema is a good way to lose a database. A failure here is logged loudly
+// but does not stop the host, so the API and its readiness probe still come up and say what is
+// wrong.
 static async Task ApplyDevelopmentMigrationsAsync(WebApplication app)
 {
     if (!app.Environment.IsDevelopment())
