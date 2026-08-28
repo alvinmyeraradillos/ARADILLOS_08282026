@@ -18,6 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The sample files are copied next to the test binary so the suite can pin the exact
+         numbers published in the README. Documentation that nothing verifies goes stale. -->
+    <Content Include="..\..\samples\*.csv"
+             Link="samples\%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
