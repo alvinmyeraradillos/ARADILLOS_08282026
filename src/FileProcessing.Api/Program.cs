@@ -3,10 +3,12 @@ using FileProcessing.Api.Authentication;
 using FileProcessing.Api.Middleware;
 using FileProcessing.Api.OpenApi;
 using FileProcessing.Api.RateLimiting;
+using FileProcessing.Api.Validation;
 using FileProcessing.Core;
 using FileProcessing.Core.Processing;
 using FileProcessing.Infrastructure;
 using FileProcessing.Infrastructure.Persistence;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,8 +70,17 @@ builder.Services.AddProblemDetails(options =>
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+// Request validation. Validators are discovered from this assembly, and the filter applies any it
+// finds to the bound action arguments — so adding a validator is the only step needed to start
+// validating a new request type.
+builder.Services.AddValidatorsFromAssemblyContaining<UploadFileRequestValidator>();
+
 builder.Services
-    .AddControllers(options => options.ReturnHttpNotAcceptable = true)
+    .AddControllers(options =>
+    {
+        options.ReturnHttpNotAcceptable = true;
+        options.Filters.Add<FluentValidationFilter>();
+    })
     .AddJsonOptions(json =>
     {
         json.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -111,6 +122,17 @@ if (app.Environment.IsProduction())
 }
 
 app.UseApiDocumentation(app.Environment);
+
+// The demo console in wwwroot. Served from the API's own origin on purpose: the page sends the
+// API key as a request header, and a page hosted anywhere else would be blocked by CORS before it
+// ever reached an endpoint. Static files sit ahead of routing, so they are not endpoints and the
+// fallback authorization policy does not apply — which is what we want for an unauthenticated
+// page whose whole job is to collect a key. Withheld in production, like Swagger.
+if (!app.Environment.IsProduction())
+{
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+}
 
 app.UseRouting();
 app.UseAuthentication();

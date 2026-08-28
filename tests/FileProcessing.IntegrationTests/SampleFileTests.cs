@@ -72,7 +72,7 @@ public sealed class SampleFileTests(FileProcessingApiFactory factory)
             [
                 "transactionDate.invalid_format",
                 "amount.not_a_number",
-                "currency.not_allowed",
+                "currency.invalid_format",
                 "category.missing",
                 "transactionId.duplicate",
                 "amount.too_many_decimals",

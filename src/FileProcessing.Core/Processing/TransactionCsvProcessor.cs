@@ -43,7 +43,7 @@ public sealed class TransactionCsvProcessor(
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        var validator = new TransactionRowValidator(_options, clock);
+        var validator = new TransactionRowValidator(clock);
         var errors = new ErrorSink(_options.MaxRetainedErrors);
 
         // detectEncodingFromByteOrderMarks strips a UTF-8/UTF-16 BOM instead of letting it become

@@ -61,7 +61,7 @@ public sealed class FileUploadAndReportingTests(FileProcessingApiFactory factory
             TransactionId,TransactionDate,Description,Amount,Currency,Category
             TXN-10,2026-07-01,Good,100.00,AUD,Linehaul
             TXN-11,31/07/2026,Bad date,50.00,AUD,Fuel
-            TXN-12,2026-07-03,Bad currency,25.00,XYZ,Fuel
+            TXN-12,2026-07-03,Bad currency,25.00,AUDD,Fuel
             """;
 
         var response = await client.PostAsync("/api/v1/files", Upload(csv));
@@ -84,7 +84,7 @@ public sealed class FileUploadAndReportingTests(FileProcessingApiFactory factory
             second =>
             {
                 Assert.Equal(4, second.Line);
-                Assert.Equal("currency.not_allowed", second.Code);
+                Assert.Equal("currency.invalid_format", second.Code);
             });
     }
 

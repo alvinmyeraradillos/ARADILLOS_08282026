@@ -28,12 +28,6 @@ public sealed class ReportsController(IProcessedFileRepository repository) : Con
         [FromQuery] SummaryReportRequest request,
         CancellationToken cancellationToken)
     {
-        if (request.From is { } from && request.To is { } to && from > to)
-        {
-            ModelState.AddModelError(nameof(request.From), "from must not be later than to.");
-            return ValidationProblem(ModelState);
-        }
-
         var report = await repository.SummariseAsync(
             new ReportQuery
             {
