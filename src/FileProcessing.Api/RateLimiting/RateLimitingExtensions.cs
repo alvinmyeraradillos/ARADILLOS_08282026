@@ -4,6 +4,7 @@ using System.Threading.RateLimiting;
 using FileProcessing.Api.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 
 namespace FileProcessing.Api.RateLimiting;
 
@@ -60,8 +61,8 @@ public static class RateLimitingExtensions
             limiter.AddPolicy(RateLimitPolicies.Upload, context =>
             {
                 var options = context.RequestServices
-                    .GetRequiredService<IOptionsSnapshotAccessor<RateLimitingOptions>>()
-                    .Value;
+                    .GetRequiredService<IOptionsMonitor<RateLimitingOptions>>()
+                    .CurrentValue;
 
                 return RateLimitPartition.GetFixedWindowLimiter(
                     PartitionKey(context),
@@ -76,8 +77,8 @@ public static class RateLimitingExtensions
             limiter.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
             {
                 var options = context.RequestServices
-                    .GetRequiredService<IOptionsSnapshotAccessor<RateLimitingOptions>>()
-                    .Value;
+                    .GetRequiredService<IOptionsMonitor<RateLimitingOptions>>()
+                    .CurrentValue;
 
                 return RateLimitPartition.GetFixedWindowLimiter(
                     PartitionKey(context),
