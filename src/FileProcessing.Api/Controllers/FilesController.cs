@@ -47,20 +47,13 @@ public sealed class FilesController(
         [FromForm] UploadFileRequest request,
         CancellationToken cancellationToken)
     {
-        if (request.File is not { } formFile)
-        {
-            ModelState.AddModelError(nameof(request.File), "A file part named 'file' is required.");
-            return ValidationProblem(ModelState);
-        }
+        // Presence and emptiness are settled by UploadFileRequestValidator before the action
+        // runs, which is why the null-forgiving operator is safe here.
+        var formFile = request.File!;
 
-        if (formFile.Length == 0)
-        {
-            ModelState.AddModelError(nameof(request.File), "The uploaded file is empty.");
-            return ValidationProblem(ModelState);
-        }
-
-        // The declared length is a cheap first gate. HashingReadStream enforces the same limit
-        // against the bytes actually delivered, because Content-Length can lie.
+        // Size is a 413 rather than a validation problem, so it stays out of the validator. This
+        // gate trusts the declared length; HashingReadStream enforces the same limit against the
+        // bytes actually delivered, because Content-Length can lie.
         if (formFile.Length > _options.MaxFileSizeInBytes)
         {
             return Problem(
@@ -134,12 +127,6 @@ public sealed class FilesController(
         [FromQuery] ListFilesRequest request,
         CancellationToken cancellationToken)
     {
-        if (request.ReceivedFrom is { } from && request.ReceivedTo is { } to && from > to)
-        {
-            ModelState.AddModelError(nameof(request.ReceivedFrom), "receivedFrom must not be later than receivedTo.");
-            return ValidationProblem(ModelState);
-        }
-
         var page = await repository.QueryAsync(
             new ProcessedFileQuery
             {

@@ -67,13 +67,23 @@ docker compose up --build
 Compose starts PostgreSQL, waits for it to accept connections, then starts the API, which applies
 its migrations on start-up.
 
-- API: <http://localhost:5080>
+- Demo console: <http://localhost:5080>
 - Swagger UI: <http://localhost:5080/swagger>
 
 ```bash
 docker compose logs -f api      # follow the API log
 docker compose down -v          # stop and drop the database volume
 ```
+
+### The demo console
+
+A small page that drives the live API: pick one of the development keys, upload a file (or use a
+built-in sample), then list what was tracked and pull the summary report. Switching keys is the
+quickest way to see `401`, `403` and tenant isolation in action. Every call shows the HTTP status
+and offers the raw JSON.
+
+It is served from the API's own origin so it can send the `X-Api-Key` header, and — like Swagger —
+it is not served in production.
 
 ### Against a local PostgreSQL
 
@@ -134,7 +144,7 @@ dotnet ef database update --project src/FileProcessing.Infrastructure --startup-
 dotnet test
 ```
 
-121 tests — 87 unit, 34 integration. No database and no Docker required; run it straight after
+135 tests — 101 unit, 34 integration. No database and no Docker required; run it straight after
 cloning. The integration tests host the real application through `WebApplicationFactory` with the
 database swapped for an in-memory provider.
 
