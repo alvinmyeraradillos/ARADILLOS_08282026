@@ -7,10 +7,12 @@
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
     <!-- Design-time only: gives `dotnet ef` a startup project it can build the model from.
-         PrivateAssets keeps it out of the published output. -->
+         The package's default asset set includes `runtime`, which drags roughly 4 MB of Roslyn
+         MSBuild BuildHost content into the published output. `dotnet ef` only needs the build
+         targets, so runtime assets are excluded and the deployed image carries no build tooling. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>build; buildtransitive; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 

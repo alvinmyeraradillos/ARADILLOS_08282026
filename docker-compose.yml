@@ -28,11 +28,28 @@ services:
       db:
         condition: service_healthy
     environment:
+      # Development so the reviewer gets Swagger, the sample API keys and automatic migration on
+      # start-up. A real deployment runs Production and migrates as a separate, reviewable step.
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__FileProcessingDb: "Host=db;Port=5432;Database=fileprocessing;Username=fileprocessing;Password=fileprocessing"
     ports:
       - "5080:8080"
+
+    # ------------------------------------------------------------------------------------------
+    # Container hardening. This service parses files from outside the trust boundary, so the blast
+    # radius of a parser bug is worth constraining.
+    # ------------------------------------------------------------------------------------------
+    read_only: true
+    tmpfs:
+      # ASP.NET buffers a multipart section to disk once it grows past ~64 KB, so a read-only root
+      # filesystem breaks uploads unless temp is writable. Sized for several concurrent uploads at
+      # the 10 MB default; raise it in step with FileProcessing:MaxFileSizeInBytes.
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
 
 volumes:
   db-data:
